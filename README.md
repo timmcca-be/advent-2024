@@ -9,3 +9,4 @@ Built as a series of Python user programs on Khan Academy, which I built a signi
 - [Day 3](https://www.khanacademy.org/python-program/advent-2024-day-3/4889322615390208)
 - [Day 4](https://www.khanacademy.org/python-program/advent-2024-day-4/5774621172219904)
 - [Day 5](https://www.khanacademy.org/python-program/advent-2024-day-5/6584859873951744)
+- [Day 6](https://www.khanacademy.org/python-program/advent-2024-day-6/5715944100773888)
