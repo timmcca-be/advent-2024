@@ -1,6 +1,3 @@
-from example_input import example_input
-from puzzle_input import puzzle_input
-
 def get_rules_and_advance_iterator(iterator):
     rules = dict()
     for line in iterator:
@@ -24,8 +21,8 @@ def is_update_valid(rules, pages):
         unvisited.remove(page)
     return True
 
-def solve_part_1(input_str):
-    iterator = iter(input_str.splitlines())
+def solve_part_1(input_lines):
+    iterator = iter(input_lines)
     rules = get_rules_and_advance_iterator(iterator)
     result = 0
     for line in iterator:
@@ -34,8 +31,8 @@ def solve_part_1(input_str):
             result += pages[len(pages) // 2]
     return result
 
-def solve_part_2(input_str):
-    iterator = iter(input_str.splitlines())
+def solve_part_2(input_lines):
+    iterator = iter(input_lines)
     rules = get_rules_and_advance_iterator(iterator)
     result = 0
     for line in iterator:
@@ -51,7 +48,20 @@ def solve_part_2(input_str):
         result += page
     return result
 
-print("Part 1 example:", solve_part_1(example_input))
-print("Part 1 real:   ", solve_part_1(puzzle_input))
-print("Part 2 example:", solve_part_2(example_input))
-print("Part 2 real:   ", solve_part_2(puzzle_input))
+fake_newline = "$"
+eof_indicator = "<<eof>>"
+print("Note: newlines will be ignored due to limitations in the platform, "
+      + f"but the {fake_newline} character will be treated as a newline.")
+print(f"Enter the puzzle input, followed by {eof_indicator} "
+      + "on its own (real) line:")
+input_str = ""
+while True:
+    line = input()
+    if line.strip() == eof_indicator:
+        break
+    input_str += line
+
+input_lines = [line.strip() for line in input_str.split(fake_newline)]
+
+print("Part 1:", solve_part_1(input_lines))
+print("Part 2:", solve_part_2(input_lines))

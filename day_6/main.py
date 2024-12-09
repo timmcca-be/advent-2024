@@ -1,6 +1,3 @@
-from example_input import example_input
-from puzzle_input import puzzle_input
-
 # it's like the slidey ice puzzles in pokemon!
 
 NORTH = 0
@@ -31,8 +28,7 @@ def is_in_bounds(position, width, height):
         and position[1] >= 0 and position[1] < height
     )
 
-def parse_input(input_str):
-    map = input_str.splitlines()
+def parse_input(map):
     obstacles = set()
     for (line_index, line) in enumerate(map):
         for (char_index, char) in enumerate(line):
@@ -53,8 +49,8 @@ def guard_step(guard_position, direction, obstacles):
         direction = rotate(direction)
     return None
 
-def solve_part_1(input_str):
-    guard_position, obstacles, width, height = parse_input(input_str)
+def solve_part_1(input_lines):
+    guard_position, obstacles, width, height = parse_input(input_lines)
     visited = set()
     direction = STARTING_DIRECTION
     while is_in_bounds(guard_position, width, height):
@@ -83,8 +79,8 @@ def will_guard_loop(guard_position, obstacles, width, height):
         guard_position, direction = new_position, new_direction
     return False
 
-def solve_part_2(input_str):
-    starting_position, obstacles, width, height = parse_input(input_str)
+def solve_part_2(input_lines):
+    starting_position, obstacles, width, height = parse_input(input_lines)
     guard_position = starting_position
     direction = STARTING_DIRECTION
     new_obstacle_positions = set()
@@ -106,7 +102,20 @@ def solve_part_2(input_str):
         guard_position, direction = new_position, new_direction
     return len(new_obstacle_positions)
 
-print("Part 1 example:", solve_part_1(example_input))
-print("Part 1 real:   ", solve_part_1(puzzle_input))
-print("Part 2 example:", solve_part_2(example_input))
-print("Part 2 real:   ", solve_part_2(puzzle_input))
+fake_newline = "$"
+eof_indicator = "<<eof>>"
+print("Note: newlines will be ignored due to limitations in the platform, "
+      + f"but the {fake_newline} character will be treated as a newline.")
+print(f"Enter the puzzle input, followed by {eof_indicator} "
+      + "on its own (real) line:")
+input_str = ""
+while True:
+    line = input()
+    if line.strip() == eof_indicator:
+        break
+    input_str += line
+
+input_lines = [line.strip() for line in input_str.split(fake_newline)]
+
+print("Part 1:", solve_part_1(input_lines))
+print("Part 2:", solve_part_2(input_lines))

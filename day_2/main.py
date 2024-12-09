@@ -1,17 +1,14 @@
 import re
 
-from example_input import example_input
-from puzzle_input import puzzle_input
-
-def parse_input(input_str):
+def parse_input(input_lines):
     return [
         [int(item) for item in re.split(r'\s+', line)]
-        for line in input_str.splitlines()
+        for line in input_lines
     ]
 
-def solve(input_str, is_safe):
+def solve(input_lines, is_safe):
     return [
-        is_safe(report) for report in parse_input(input_str)
+        is_safe(report) for report in parse_input(input_lines)
     ].count(True)
 
 def is_safe_part_1(report):
@@ -26,8 +23,8 @@ def is_safe_part_1(report):
             return False
     return True
 
-def solve_part_1(input_str):
-    return solve(input_str, is_safe_part_1)
+def solve_part_1(input_lines):
+    return solve(input_lines, is_safe_part_1)
 
 def is_safe_part_2(report):
     # this is O(n^2) with respect to the length of report.
@@ -44,10 +41,23 @@ def is_safe_part_2(report):
             return True
     return False
 
-def solve_part_2(input_str):
-    return solve(input_str, is_safe_part_2)
+def solve_part_2(input_lines):
+    return solve(input_lines, is_safe_part_2)
 
-print("Part 1 example:", solve_part_1(example_input))
-print("Part 1 real:   ", solve_part_1(puzzle_input))
-print("Part 2 example:", solve_part_2(example_input))
-print("Part 2 real:   ", solve_part_2(puzzle_input))
+fake_newline = "$"
+eof_indicator = "<<eof>>"
+print("Note: newlines will be ignored due to limitations in the platform, "
+      + f"but the {fake_newline} character will be treated as a newline.")
+print(f"Enter the puzzle input, followed by {eof_indicator} "
+      + "on its own (real) line:")
+input_str = ""
+while True:
+    line = input()
+    if line.strip() == eof_indicator:
+        break
+    input_str += line
+
+input_lines = [line.strip() for line in input_str.split(fake_newline)]
+
+print("Part 1:", solve_part_1(input_lines))
+print("Part 2:", solve_part_2(input_lines))

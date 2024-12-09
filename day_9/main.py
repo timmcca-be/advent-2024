@@ -1,6 +1,3 @@
-from example_input import example_input, example_input_2
-from puzzle_input import puzzle_input
-
 # a lesson in premature optimization: I wrote this function thinking
 # "oh there's no way this is doable with the whole expanded filesystem
 # in memory." well, there is, it runs in about the same amount of time,
@@ -123,8 +120,15 @@ def solve_part_2(input_str):
             absolute_pointer += 1
     return result
 
-print("Part 1 example:  ", solve_part_1(example_input))
-print("Part 1 example 2:", solve_part_1(example_input_2))
-print("Part 1 real:     ", solve_part_1(puzzle_input))
-print("Part 2 example:  ", solve_part_2(example_input))
-print("Part 2 real:     ", solve_part_2(puzzle_input))
+eof_indicator = "<<eof>>"
+print(f"Enter the puzzle input, followed by {eof_indicator} "
+      + "on its own line:")
+input_str = ""
+while True:
+    line = input()
+    if line.strip() == eof_indicator:
+        break
+    input_str += line.strip().replace(" ", "")
+
+print("Part 1:", solve_part_1(input_str))
+print("Part 2:", solve_part_2(input_str))
