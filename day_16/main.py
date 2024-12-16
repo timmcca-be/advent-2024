@@ -86,15 +86,15 @@ def solve(input_lines):
     # node, but tracking the prior node makes it easier to
     # reconstruct the optimal paths for part 2.
     priority_queue = [(0, ((start, STARTING_DIRECTION), None))]
-    visited = set()
+    visited_states = set()
     optimal_distances = {start: 0}
     reverse_optimal_path_lookup = dict()
     shortest_distance_to_end = None
     while len(priority_queue) > 0:
         distance, state = heappop(priority_queue)
-        if state in visited:
+        if state in visited_states:
             continue
-        visited.add(state)
+        visited_states.add(state)
 
         current_node, prior_node = state
         position, direction = current_node
@@ -116,14 +116,14 @@ def solve(input_lines):
         rotated_clockwise = (
             (position, rotate_clockwise(direction)),
             current_node)
-        if rotated_clockwise not in visited:
+        if rotated_clockwise not in visited_states:
             heappush(priority_queue,
                 (distance + ROTATE_PENALTY, rotated_clockwise))
 
         rotated_counterclockwise = (
             (position, rotate_counterclockwise(direction)),
             current_node)
-        if rotated_counterclockwise not in visited:
+        if rotated_counterclockwise not in visited_states:
             heappush(priority_queue,
                 (distance + ROTATE_PENALTY, rotated_counterclockwise))
 
@@ -131,7 +131,7 @@ def solve(input_lines):
         next_state = (
             (next_position, direction),
             current_node)
-        if next_position not in walls and next_state not in visited:
+        if next_position not in walls and next_state not in visited_states:
             heappush(priority_queue, (distance + 1, next_state))
 
     print("Part 1:", shortest_distance_to_end)
