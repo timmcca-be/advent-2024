@@ -51,16 +51,16 @@ def parse_input(input_lines):
 
 ROTATE_PENALTY = 1000
 
-def get_optimal_states(
-    reverse_optimal_path_lookup, current, visited = None):
+def get_optimal_nodes(
+    reverse_optimal_path_lookup, current_node, visited = None):
     if visited is None:
         visited = set()
-    if current in visited:
+    if current_node in visited:
         return visited
-    visited.add(current)
-    for prior in reverse_optimal_path_lookup.get(current, set()):
-        visited = get_optimal_states(
-            reverse_optimal_path_lookup, prior, visited)
+    visited.add(current_node)
+    for prior_node in reverse_optimal_path_lookup.get(current_node, set()):
+        visited = get_optimal_nodes(
+            reverse_optimal_path_lookup, prior_node, visited)
     return visited
 
 def get_char_at_position(position, walls, optimal_locations):
@@ -80,6 +80,11 @@ def print_result(walls, optimal_locations, dimensions):
 
 def solve(input_lines):
     start, end, walls, dimensions = parse_input(input_lines)
+    # we treat each (position, direction) tuple as a node, and
+    # we go through a priority queue of (current_node, prior_node)
+    # tuples. normally in dijkstra, we only care about the current
+    # node, but tracking the prior node makes it easier to
+    # reconstruct the optimal paths for part 2.
     priority_queue = [(0, ((start, STARTING_DIRECTION), None))]
     visited = set()
     optimal_distances = {start: 0}
@@ -90,39 +95,52 @@ def solve(input_lines):
         if state in visited:
             continue
         visited.add(state)
-        current, prior = state
-        if current == prior:
-            raise Exception(current)
-        position, direction = current
+
+        current_node, prior_node = state
+        position, direction = current_node
+
         if (shortest_distance_to_end is not None
             and distance > shortest_distance_to_end):
             break
+
         if position == end:
             shortest_distance_to_end = distance
-        if prior is not None and current not in optimal_distances:
-            optimal_distances[current] = distance
-            reverse_optimal_path_lookup[current] = {prior}
-        elif prior is not None and distance == optimal_distances[current]:
-            reverse_optimal_path_lookup[current].add(prior)
-        rotated_clockwise = ((position, rotate_clockwise(direction)), current)
+
+        if prior_node is not None and current_node not in optimal_distances:
+            optimal_distances[current_node] = distance
+            reverse_optimal_path_lookup[current_node] = {prior_node}
+        elif (prior_node is not None
+              and distance == optimal_distances[current_node]):
+            reverse_optimal_path_lookup[current_node].add(prior_node)
+
+        rotated_clockwise = (
+            (position, rotate_clockwise(direction)),
+            current_node)
         if rotated_clockwise not in visited:
             heappush(priority_queue,
                 (distance + ROTATE_PENALTY, rotated_clockwise))
+
         rotated_counterclockwise = (
-            (position, rotate_counterclockwise(direction)), current)
+            (position, rotate_counterclockwise(direction)),
+            current_node)
         if rotated_counterclockwise not in visited:
             heappush(priority_queue,
                 (distance + ROTATE_PENALTY, rotated_counterclockwise))
+
         next_position = move(position, direction)
-        next_state = ((next_position, direction), current)
+        next_state = (
+            (next_position, direction),
+            current_node)
         if next_position not in walls and next_state not in visited:
             heappush(priority_queue, (distance + 1, next_state))
+
     print("Part 1:", shortest_distance_to_end)
+
     optimal_locations = set()
     for direction in range(NUM_DIRECTIONS):
         optimal_locations |= set(
             position
-            for position, _ in get_optimal_states(
+            for position, _ in get_optimal_nodes(
                 reverse_optimal_path_lookup, (end, direction)))
     # print_result(walls, optimal_locations, dimensions)
     print("Part 2:", len(optimal_locations))
