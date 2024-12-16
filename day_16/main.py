@@ -117,10 +117,7 @@ def solve(input_lines):
         next_state = ((next_position, direction), current)
         if next_position not in walls and next_state not in visited:
             heappush(priority_queue, (distance + 1, next_state))
-    print("Part 1:", min(
-        optimal_distances[end, direction]
-        for direction in range(NUM_DIRECTIONS)
-        if (end, direction) in optimal_distances))
+    print("Part 1:", shortest_distance_to_end)
     optimal_locations = set()
     for direction in range(NUM_DIRECTIONS):
         optimal_locations |= set(
