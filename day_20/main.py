@@ -62,10 +62,7 @@ def solve(input_lines, max_cheat_distance):
     positions = {end}
     distance = 0
     result = 0
-    while True:
-        min_distance_from_start, _ = positions_and_distances[0]
-        if min_distance_from_start + distance > target_distance:
-            break
+    for distance in range(target_distance):
         visited |= positions
         new_positions = set()
         for position in positions:
@@ -83,7 +80,6 @@ def solve(input_lines, max_cheat_distance):
                 if new_position not in visited | walls:
                     new_positions.add(new_position)
         positions = new_positions
-        distance += 1
     return result
 
 def solve_part_1(input_lines):
